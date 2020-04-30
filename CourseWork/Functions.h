@@ -1,11 +1,15 @@
 #pragma once
 #include <iostream>
 #include <string>
-#include <string>
+#include <iterator>
+#include <algorithm>
+#include <list>
 using namespace std;
 
 struct date
 {
+	int hour;
+	int minute;
 	int day;
 	int month;
 	int year;
@@ -16,53 +20,77 @@ struct ticket
 	int value;
 	bool possibleToReturn;
 };
+struct connectionFlight
+{
+	string connectionFlightCity; //мысце пересадки
+	int connectionFlightTime; //тривалфсть пересадки в хвилинах
+};
 struct flight
 {
 	string name;
 	string company;
-	int countTickets;
-	ticket* tickets;
 	date departure;
 	date arrive;
-	int ticketsAviable; //к≥льк≥сть квитк≥в доступно в сум≥(маЇ бути ще окремо до кожного класу квитка)
+	int allTicketsAviable; //сума вс≥х доступних квитк≥в
+	int ticketsAviableEconomClass; //дл€ адм≥на - к≥льк≥сть квитк≥в доступно економ класу
+	int ticketsAviableFirstClass; //дл€ адм≥на - к≥льк≥сть квитк≥в доступно першого класу
+	int countTickets; //дл€ користувача
+	ticket* tickets; //дл€ користувача ≥ адм≥на
 	int countConnectionFlights; //к≥льк≥сть пересадок
+	connectionFlight* ConnectionFlights;
+	string departureCity;
+	string arrivalCity; 
 };
+/*в юзера в файл≥ буде так:
+name
+company
+departure
+arrive
+count tickets
+tickets(без к-ст≥ доступних
+count connection flights
+conection flights
+departure city
+arrival city*/
+
+/*в файл≥ з рейсами буде так
+name
+company
+departure
+arrive
+tickets(разом з к≥льк≥стю доступних)
+count connection flights
+conection flights
+departure city
+arrival city
+*/
+
 struct user
 {
 	string login;
 	string password;
 	float money;
 	string email;
-	int countTickets;
+	int countFlights;
 	flight* myFlights;
 };
+
 
 struct admin
 {
 	string login;
 	string password;
+	string company;
 };
 
 void init();
+void rewriteUsersFile();
+auto delete_list_elem(list<user>& list1, int k);
 
-
-//‘”Ќ ÷≤ѓ ƒЋя јƒћ≤Ќј
-
-
-void signUpAdmin();
 void editFlights();
 
-
-//‘”Ќ ÷≤ѓ ƒЋя  ќ–»—“”¬ј„ј
-
-
 void signUp();
-void buyTicket();
-void searchFlight();
-void showMyFlights();
-void myProfile(string filename);
-
-//—ѕ≤Ћ№Ќ ‘”Ќ ÷≤ѓ
-
+void searchFlight(user myUser);
+void showMyFlights(user myUser);
 void signIn();
 

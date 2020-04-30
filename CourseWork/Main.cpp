@@ -1,10 +1,17 @@
 #include <iostream>
 #include <string>
 #include "Functions.h"
+#include <iterator>
+#include <algorithm>
+#include <list>
+
 using namespace std;
+
 
 int main()
 {
+	
+	init();
 	int choiseMenu;
 	do {
 		cout << "\tMY FIGHTS" << endl;

@@ -1,2 +1,8 @@
 ﻿  Functions.cpp
+C:\Users\Администратор\source\repos\CourseWork\CourseWork\Functions.cpp(280,74): warning C4129: /: неизвестная escape-последовательность
+C:\Users\Администратор\source\repos\CourseWork\CourseWork\Functions.cpp(280,121): warning C4129: /: неизвестная escape-последовательность
+C:\Users\Администратор\source\repos\CourseWork\CourseWork\Functions.cpp(283,69): warning C4129: /: неизвестная escape-последовательность
+  Main.cpp
+  Создание кода...
+C:\Users\Администратор\source\repos\CourseWork\CourseWork\Functions.cpp(283,111): warning C4129: /: неизвестная escape-последовательность
   CourseWork.vcxproj -> C:\Users\Администратор\source\repos\CourseWork\Debug\CourseWork.exe

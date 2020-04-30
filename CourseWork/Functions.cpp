@@ -4,6 +4,8 @@
 #include <string>
 #include <iostream>
 #include <list>
+#include <iterator>
+#include <algorithm>
 using namespace std;
 
 int size = 10;//треба щоб розмір масиву з логінами і паролями вводився з клави але дееее
@@ -12,10 +14,8 @@ string filenameAdminsSignIn = "AdminsSignIn.txt"; //файл з логінами і паролями а
 string filenameUsersSignIn = "UsersSignIn.txt"; //файл з логінами і паролями користувачів
 list <user> users; //список з користувачами (при реєстрації вноситься інф)
 list <admin> admins;
-//string *filenameusers = new string[10]; //масив з назвами файлів кожного користувача окремо
 list<flight> allFlights;
 //ФУНКЦІЇ АДМІНА
-
 
 void init()
 {
@@ -24,118 +24,136 @@ void init()
 	bool isOpen = fin.is_open();
 	if (isOpen == true)
 	{
-		int currentstring = 0;
-		string data;
-		float data2;
+		
 		user oldUser;
 		while (!fin.eof())
 		{
-			currentstring++;
-			getline(fin, data);
-			if(currentstring == 1)
-			{
-				oldUser.login = data;
-			}
-			else if (currentstring == 2)
-			{
-				oldUser.password = data;
-			}
-			else if (currentstring == 3)
-			{
-				oldUser.money = data;
-			}
-			else if (currentstring == 4)
-			{
-				oldUser.email = data;
-			}
-			else if (currentstring == 5)
-			{
-				oldUser.countTickets = data;
+			getline(fin, oldUser.login);
+			getline(fin, oldUser.password);
+			fin >> oldUser.money;
+			getline(fin, oldUser.email);
+			fin >> oldUser.countFlights;
 
-			}
-			if (oldUser.countTickets >= 1)
+			if (oldUser.countFlights >= 1)
 			{
-				string data1;
-				oldUser.myFlights = new flight[oldUser.countTickets];
-				int currentstring1 = 0;
-				for (int i = 0; i < oldUser.countTickets; i++)
+				
+				oldUser.myFlights = new flight[oldUser.countFlights];
+				for (int i = 0; i < oldUser.countFlights; i++)
 				{
-					getline(fin, data1);
-					currentstring1++;
-					if (currentstring1 == 1)
-					{
-						oldUser.myFlights[i].name = data1;
-					}
-					else if (currentstring1 == 2)
-					{
-						oldUser.myFlights[i].company = data1;
-					}
-					else if (currentstring1 == 3)
-					{
-						oldUser.myFlights[i].countTickets = data1;
-						if (oldUser.myFlights[i].countTickets >= 1)
-						{
-							string data2;
-							int currentstring2 = 0;
-							for (int i = 0; i < oldUser.myFlights[i].countTickets; i++)
-							{
-								getline(fin, data2);
-								currentstring2++;
-								if (currentstring2 == 1)
-								{
-									oldUser.myFlights[i].tickets->ticketClass = data2;
-								}
-								else if (currentstring2 == 2)
-								{
-									oldUser.myFlights[i].tickets->value = data2; 
-								}
-								else if (currentstring2 == 3)
-								{
-									oldUser.myFlights[i].tickets->possibleToReturn = data2;
-									currentstring2 = 0;
-								}
+					getline(fin, oldUser.myFlights[i].name);
+					getline(fin, oldUser.myFlights[i].company);
+					fin >> oldUser.myFlights[i].departure.hour;
+					fin >> oldUser.myFlights[i].departure.minute;
+					fin >> oldUser.myFlights[i].departure.day;
+					fin >> oldUser.myFlights[i].departure.month;
+					fin >> oldUser.myFlights[i].departure.year;
 
-							}
-						}
-					}
-					else if (currentstring1 == 4)
-					{
-						oldUser.myFlights->departure.day = data1;
-					}
-					else if (currentstring1 == 5)
-					{
-						oldUser.myFlights->departure.month = data1;
-					}
-					else if (currentstring1 == 6)
-					{
-						oldUser.myFlights->departure.year = data1;
-					}
-					else if (currentstring1 == 7)
-					{
-						oldUser.myFlights->arrive.day = data1;
-					}
-					else if (currentstring1 == 8)
-					{
-						oldUser.myFlights->arrive.month = data1;
-					}
-					else if (currentstring1 == 9)
-					{
-						oldUser.myFlights->arrive.year = data1;
-					}
-					else if (currentstring1 == 11)
-					{
-						oldUser.myFlights->countConnectionFlights = data1;
-						currentstring1 = 0;
-						users.push_back(oldUser);
-						oldUser = user();
-					}
+					fin >> oldUser.myFlights[i].arrive.hour;
+					fin >> oldUser.myFlights[i].arrive.minute;
+					fin >> oldUser.myFlights[i].arrive.day;
+					fin >> oldUser.myFlights[i].arrive.month;
+					fin >> oldUser.myFlights[i].arrive.year;
 
-
+					fin >> oldUser.myFlights[i].countTickets;
+					for (int j = 0; j < oldUser.myFlights[i].countTickets; j++)
+					{
+						getline(fin, oldUser.myFlights[i].tickets[j].ticketClass);
+						fin >> oldUser.myFlights[i].tickets[j].value;
+						fin >> oldUser.myFlights[i].tickets[j].possibleToReturn;
+						
+					}
+					fin >> oldUser.myFlights[i].countConnectionFlights;
+					oldUser.myFlights[i].ConnectionFlights = new connectionFlight[oldUser.myFlights[i].countConnectionFlights];
+					for (int j = 0; j < oldUser.myFlights[i].countConnectionFlights; j++)
+					{
+						getline(fin, oldUser.myFlights[i].ConnectionFlights[j].connectionFlightCity);
+						fin >> oldUser.myFlights[i].ConnectionFlights[j].connectionFlightTime;
+					}
+					getline(fin, oldUser.myFlights[i].departureCity);
+					getline(fin, oldUser.myFlights[i].arrivalCity);
+					
 					
 				}
 			}
 			
+			users.push_back(oldUser);
+			oldUser = user();
+		}
+	}
+	else
+	{
+		cout << "Error: can not open file!" << endl;
+	}
+	fin.close();
 
+	fin.open(filenameAdminsSignIn);
+	isOpen = fin.is_open();
+	if (isOpen == true)
+	{
+		admin oldAdmin;
+		while (!fin.eof())
+		{
+			getline(fin, oldAdmin.login);
+			getline(fin, oldAdmin.password);
+			getline(fin, oldAdmin.company);
+			admins.push_back(oldAdmin);
+			oldAdmin = admin();
+		}
+	}
+	else
+	{
+		cout << "Error: can not open file!" << endl;
+	}
+	fin.close();
+
+	fin.open(filenameFlights);
+	isOpen = fin.is_open();
+	if (isOpen == true)
+	{
+		flight oldFlight;
+		string temp;
+
+		while (!fin.eof())
+		{
+			getline(fin, oldFlight.name);
+			getline(fin, oldFlight.company);
+			fin >> oldFlight.departure.hour;
+			fin >> oldFlight.departure.minute;
+			fin >> oldFlight.departure.day;
+			fin >> oldFlight.departure.month;
+			fin >> oldFlight.departure.year;
+
+			fin >> oldFlight.arrive.hour;
+			fin >> oldFlight.arrive.minute;
+			fin >> oldFlight.arrive.day;
+			fin >> oldFlight.arrive.month;
+			fin >> oldFlight.arrive.year;
+
+			fin >> oldFlight.allTicketsAviable; //Окей Кароче як я понімаюбілетів для цього рейсу, но воно зчитує мусор і тому в тебе потім там не може виділитись память 
+			fin >> oldFlight.ticketsAviableEconomClass;
+			fin >> oldFlight.ticketsAviableFirstClass;
+			oldFlight.tickets = new ticket[oldFlight.allTicketsAviable];
+			for (int i = 0; i < oldFlight.allTicketsAviable; i++)
+			{
+				fin >> temp;
+				oldFlight.tickets[i].ticketClass = temp;
+				fin >> oldFlight.tickets[i].value;
+				fin >> oldFlight.tickets[i].possibleToReturn;
+			}
+			fin >> oldFlight.countConnectionFlights;
+			oldFlight.ConnectionFlights = new connectionFlight[oldFlight.countConnectionFlights];
+			for (int i = 0; i < oldFlight.countConnectionFlights; i++)
+			{
+				fin >> oldFlight.ConnectionFlights[i].connectionFlightCity;
+				fin >> oldFlight.ConnectionFlights[i].connectionFlightTime;
+			}
+			fin >> temp;
+			oldFlight.departureCity = temp;
+			fin >> temp;
+			oldFlight.arrivalCity = temp;
+
+			allFlights.push_back(oldFlight);
+			oldFlight = flight();
 		}
 	}
 	else
@@ -144,16 +162,84 @@ void init()
 	}
 }
 
-void editFlights()
+void rewriteUsersFile()
 {
+	ofstream fout;
+	fout.open(filenameUsersSignIn);
+	bool isOpen = fout.is_open();
+	if (isOpen == true)
+	{
+		for (user item : users)
+		{
+			fout << item.login << endl;
+			fout << item.password << endl;
+			fout << item.money << endl;
+			fout << item.email << endl;
+			fout << item.countFlights << endl;
+			if (item.countFlights >= 1)
+			{
+				for (int i = 0; i < item.countFlights; i++)
+				{
+					fout << item.myFlights[i].name << endl;
+					fout << item.myFlights[i].company << endl;
+					fout << item.myFlights[i].departure.hour << endl;
+					fout << item.myFlights[i].departure.minute << endl;
+					fout << item.myFlights[i].departure.day << endl;
+					fout << item.myFlights[i].departure.month << endl;
+					fout << item.myFlights[i].departure.year << endl;
+					fout << item.myFlights[i].arrive.hour << endl;
+					fout << item.myFlights[i].arrive.minute << endl;
+					fout << item.myFlights[i].arrive.day << endl;
+					fout << item.myFlights[i].arrive.month << endl;
+					fout << item.myFlights[i].arrive.year << endl;
+					fout << item.myFlights[i].countTickets << endl;
+					for (int j = 0; j < item.myFlights[i].countTickets; i++)
+					{
+						fout << item.myFlights[i].tickets[j].ticketClass << endl;
+						fout << item.myFlights[i].tickets[j].value << endl;
+						fout << item.myFlights[i].tickets[j].possibleToReturn << endl;
+					}
+					fout << item.myFlights[i].countConnectionFlights << endl;
+					if (item.myFlights[i].countConnectionFlights >= 1)
+					{
+						for (int j = 0; j < item.myFlights[i].countConnectionFlights; i++)
+						{
+							fout << item.myFlights[i].ConnectionFlights[j].connectionFlightCity << endl;
+							fout << item.myFlights[i].ConnectionFlights[j].connectionFlightTime << endl;
+						}
+					}
+					fout << item.myFlights[i].departureCity << endl;
+					fout << item.myFlights[i].arrivalCity << endl;
+
+				}
+			}
+		}
+	}
+	else
+	{
+		cout << "Error in file system" << endl;
+	}
+	fout.close();
+}
+
+auto delete_list_elem(list<user>& list1, int k) // <--- Тут & появился
+{
+	list<int>::iterator it = list1.begin();
+	std::advance(it, k); // <-- advance итерирует переданный итератор на k позиций
+	if (it != list1.end())
+	{
+		return list1.erase(it); // <--- Вернет итератор на k+1 элемент, перед it нет *
+	}
+	return it; // k больше размера списка, дефакто равет end()
+}
+
+
+void editFlights() //для адміна
+{
+
 }
 //ФУНКЦІЇ КОРИСТУВАЧА
-void buyTicket()
-{
-
-}
-
-void searchFlight()
+void searchFlight(user myUser)
 {
 	string departure;
 	string destination;
@@ -189,8 +275,112 @@ void searchFlight()
 
 }
 
-void showMyFlights()
+void showMyFlights(user myUser)
 {
+	cout << "My flights" << endl;
+	myUser.myFlights = new flight[myUser.countFlights];
+	for (int i = 0; i < myUser.countFlights; i++)
+	{
+		cout << "Name of flight: " << myUser.myFlights[i].name << endl;
+		cout << "Company: " << myUser.myFlights[i].company << endl;
+		cout << "Tickets" << endl;
+		for (int j = 0; j < myUser.myFlights[i].countTickets; j++)
+		{
+			cout << myUser.myFlights[i].tickets[j].ticketClass << endl;
+			cout << myUser.myFlights[i].tickets[j].value << endl;
+			cout << myUser.myFlights[i].tickets[j].possibleToReturn << endl;
+		}
+			cout << "Departure: " << myUser.myFlights[i].departureCity << endl;
+			cout << "Time of departure: " << myUser.myFlights[i].departure.hour << ":" << myUser.myFlights[i].departure.minute << endl;
+			cout << "Date of departure: " << myUser.myFlights[i].departure.day << "\/" << myUser.myFlights[i].departure.month << "\/" << myUser.myFlights[i].departure.year << endl;
+			cout << "Arrival: " << myUser.myFlights[i].arrivalCity << endl;
+			cout << "Time of arrival: " << myUser.myFlights[i].arrive.hour << ":" << myUser.myFlights[i].arrive.minute << endl;
+			cout << "Date of arrival: " << myUser.myFlights[i].arrive.day << "\/" << myUser.myFlights->arrive.month << "\/" << myUser.myFlights->arrive.year << endl;
+			for (int k = 0; k < myUser.myFlights[i].countConnectionFlights; k++)
+			{
+				cout << myUser.myFlights[i].ConnectionFlights[k].connectionFlightCity << endl;
+				cout << myUser.myFlights[i].ConnectionFlights[k].connectionFlightTime << endl;
+			}
+	}
+
+	string choiseDelete;
+	cout << "Do you want ot delete any of your tickets?(yes/no)" << endl;
+	cin >> choiseDelete;
+	if (choiseDelete == "yes")
+	{
+		string tempName;
+		cout << "Enter name of flight to delete ticket: ";
+		cin >> tempName;
+		for (user item : users)
+		{
+			if (item.login == myUser.login)
+			{
+				int count = 0;
+				for (int i = 0; i < item.countFlights; i++)
+				{
+					if (item.myFlights[i].name == tempName)
+					{
+						for (int j = 0; j < item.myFlights[i].countTickets; j++)
+						{
+							cout << j + 1 << ":" << endl;
+							cout << "\t" << item.myFlights[i].tickets[j].ticketClass << endl;
+							cout << "\t" << item.myFlights[i].tickets[j].value << endl;
+							cout << "\t" << item.myFlights[i].tickets[j].possibleToReturn << endl;
+						}
+						int number;
+						do {
+							cout << "Enter number of ticket to delete: ";
+							cin >> number;
+							if (number >= 0 && number < item.myFlights[i].countTickets)
+							{
+								for (int j = 0; j < item.myFlights[i].countTickets; j++)
+								{
+									if (item.myFlights[i].tickets[number].ticketClass == item.myFlights[i].tickets[j].ticketClass)
+									{
+										for (int j = i; j < (item.countFlights - 1); j++)
+										{
+											if (item.myFlights[i].tickets[j].possibleToReturn == 1 || item.myFlights[i].tickets[j].possibleToReturn == true)
+											{
+												item.money += item.myFlights[i].tickets[j].value;
+												cout << "You got your money back" << endl;
+											}
+											else
+											{
+												cout << "You wasted " << item.myFlights[i].tickets[j].value << "\$ for nothing (x ^ x)" << endl;
+											}
+											item.myFlights[i].tickets[j] = item.myFlights[i].tickets[j + 1];
+											item.myFlights[i].countTickets -= 1;
+											if (item.myFlights[i].countTickets <= 0)
+											{
+
+											}
+										}
+										count++;
+										break;
+									}
+							
+								}
+							}
+						} while (number < 0 && number >= item.myFlights[i].countTickets);
+								
+					}
+				}
+				if (count == 0)
+				{
+					cout << "Can not find flight with this name \(T ^ T\)" << endl;
+				}
+				else
+				{
+					rewriteUsersFile();
+					cout << "Ticket succesfuly deleted!" << endl;
+				}
+			}
+		}
+	}
+	else
+	{
+		cout << "Okay!" << endl;
+	}
 }
 
 //void myProfile(string filename)
@@ -284,12 +474,17 @@ void signIn()
 	string data;
 	bool login = false;
 	int choisepasswd; //щоб запитати в користувача чи він хоче змінити пароль
+	do
+	{
+
 	cout << "\tSIGN IN" << endl;
-	cout << "Sign in as:";
+	cout << "Sign in as:" << endl;
 	cout << "1. User" << endl;
 	cout << "2. Admin" << endl;
+	cout << "3. Exit" << endl;
 	cout << endl;
 	cout << "How to sign in?" << endl;
+	cin >> choise;
 	switch (choise)
 	{
 	case 1:
@@ -311,26 +506,32 @@ void signIn()
 		
 		if (login == true)
 		{
-		
-			ifstream fin;
-			fin.open(filenameUsersSignIn);
-			bool isOpen = fin.is_open();
-			if (isOpen == true)
+			for (user item : users)
 			{
-	
-				int choise;
+				if (tempUser.login == item.login)
+				{
+					tempUser = item;
+				}
+			}
+			int choiseMenu = 0;
+			do
+			{
 				cout << "MENU" << endl;
 				cout << "1. My profile" << endl;
 				cout << "2. My flights" << endl;
 				cout << "3. My money balance" << endl;
 				cout << "4. Notifications" << endl;
-				cout << "5. Sign out" << endl;
+				cout << "5. Search flight" << endl;
+				cout << "6. Delete account" << endl;
+				cout << "7. Sign out" << endl;
 				cout << endl;
 				cout << "Enter action: ";
-				cin >> choise;
-				switch (choise)
+				cin >> choiseMenu;
+				string tempPasswd = "";
+				switch (choiseMenu)
 				{
 				case 1:
+				
 					cout << "Login: " << tempUser.login << endl;
 					cout << "Password: ********" << endl;
 					cout << "Do you want to change it?" << endl;
@@ -338,67 +539,24 @@ void signIn()
 					cout << "2. No" << endl;
 					cin >> choisepasswd;
 					//знизу правильно
-					switch (choisepasswd)
+					if (choisepasswd == 1)
 					{
-					case 1:
-						ofstream fout;
-						fout.open(filenameUsersSignIn);
-						bool isOpen1 = fout.is_open();
-						if (isOpen1 == true)
+						string temppasswd;
+						string temppasswd2;
+						do
 						{
-							string temppasswd;
-							string temppasswd2;
 							cout << "Enter new password: ";
 							cin >> temppasswd;
 							cout << "Confirm password: ";
 							cin >> temppasswd2;
 							if (temppasswd == temppasswd2)
 							{
-								fout << tempUser.login << endl;
-								fout << temppasswd << endl;
-								for (int i = 0; i < 10; i++)//придумати шось з розміром масиву
+								for (user item : users)
 								{
-									if (users[i].password == tempUser.password)
+									if (item.password == tempUser.password)
 									{
-										string data3;
-										fin.open(filenameUsersSignIn);
-										bool isOpen2 = fin.is_open();
-										if (isOpen2 == true)
-										{
-											int currentString = 0;
-											while (!fin.eof())
-											{
-												currentString++;
-												getline(fin, data3);
-												if (currentString == 2)
-												{
-													if (data3 == tempUser.password)
-													{
-														fout.open(filenameUsersSignIn);
-														bool isOpen3 = fout.is_open();
-														if (isOpen3 == true)
-														{
-															users[i].password = temppasswd;
-															fout << tempUser.login << endl;
-															fout << temppasswd << endl;//перезаписуємо в масив новий пароль
-														}
-														else
-														{
-															cout << "ERROR!" << endl; //не відкрився файл з логінами та паролями користувачів
-														}
-														fout.close();
-													}
-												}
-											}
-										}
-										else
-										{
-											cout << "ERROR!" << endl;//не відкривається файл
-										}
-									}
-									else
-									{
-										//для пошуку старого паролю в масиві з користувачами (якшо не знаходиться то нічого не робиться)
+										item.password = temppasswd;
+										rewriteUsersFile();
 									}
 								}
 							}
@@ -406,75 +564,105 @@ void signIn()
 							{
 								cout << "Passwords don`t match" << endl;
 							}
-						}
-						else
-						{
-							cout << "ERROR!" << endl;
-						}
 
-						fout.close();
-						break;
+						} while (temppasswd != temppasswd2);
+					}
+					else
+					{
+						cout << "Okay!" << endl;
 					}
 					//зверху правильно
-
 					break;
 				case 2:
-					cout << "My flights" << endl;
-					tempUser.flights = new flight[tempUser.countTickets];
-					for (int i = 0; i < tempUser.countTickets; i++)
-					{
-						cout << "Name of flight: " << tempUser.flights->name << endl;
-						cout << "Company: " << tempUser.flights->company << endl;
-						cout << "Tickets" << endl;
-						for (int i = 0; i < tempUser.flights->countTickets; i++)
-						{
-							cout << tempUser.flights->tickets->ticketClass << endl;
-							cout << tempUser.flights->tickets->value << endl;
-							cout << tempUser.flights->tickets->possibleToReturn << endl;
-
-						}
-
-					}
+					showMyFlights(tempUser);
 					break;
 				case 3:
+				{
 					cout << "MONEY BALANCE" << endl;
 					for (user item : users)
 					{
 						if (item.login == tempUser.login)
 						{
 							string moneychoise;
-							cout << "Money: " << item.money << endl;
-							cout << "Do you want to add money?" << endl;
-							cout << "Enter yes or no: ";
-							cin >> moneychoise;
-							if (moneychoise == "yes")
-							{
+							do {
+								cout << "Money: " << item.money << endl;
+								cout << "Do you want to add money?" << endl;
+								cout << "Enter yes or no: ";
+								cin >> moneychoise;
+								if (moneychoise == "yes")
+								{
+									float moneyAdd;
+									cout << "Enter money add: ";
+									cin >> moneyAdd;
+									item.money += moneyAdd;
+									rewriteUsersFile();
+								}
+							} while (moneychoise != "no");
+						}
+					}
+					break;
+				}
+				case 4:
 
+					break;
+				case 5:
+					break;
+				case 6:
+					cout << "Enter password to delete account: ";
+					cin >> tempPasswd;
+					if (tempPasswd == tempUser.password)
+					{
+						for (user item: users) 
+						{
+							if (item.login == tempUser.login)
+							{
+								string finalChoise;
+								cout << "Are you sure that you want to delete your account? (yes/no)" << endl;
+								cin >> finalChoise;
+								if (finalChoise == "yes")
+								{
+									//users.remove(item);
+									//видалити з файлу!!!
+								}
+								else
+								{
+									cout << "Okay!" << endl;
+								}
+							}
+							else
+							{
+								cout << "Error: can not find your account in file system" << endl;
 							}
 						}
 					}
+					else
+					{
+						cout << "Wrong password!" << endl;
+					}
+					break;
+				case 7:
+					cout << "BYE!" << endl;
 					break;
 				default:
 					break;
 				}//свіч вибір пункта меню профіль чи мої рейси і тд
-			}
-			else
-			{
-				cout << "Error: can not open file!" << endl;
-			}
+			} while (choiseMenu != 6);
+			
 		} //тут має бути іф логін тру
 		else
 		{
 			cout << "Cant not find user with this login or password" << endl;
 		}
+		break;
 	}
 	case 2:
 	{
-
+		break;
 	}
 	default:
 		break;
 	}
+	}while (choise != 3);
 }
 //СПІЛЬНІ ФУНКЦІЇ
 void signUp()
