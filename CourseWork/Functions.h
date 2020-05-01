@@ -85,7 +85,7 @@ struct admin
 
 void init();
 void rewriteUsersFile();
-auto delete_list_elem(list<user>& list1, int k);
+//auto delete_list_elem(list<user>& list1, int k);
 
 void editFlights();
 
