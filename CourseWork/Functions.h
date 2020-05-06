@@ -87,9 +87,10 @@ void init();
 void rewriteUsersFile();
 //auto delete_list_elem(list<user>& list1, int k);
 
-void editFlights();
-
+void showMatrixofValues();
 void signUp();
+void buyTicket();
+void editFlights(flight flightToEdit);
 void searchFlight(user myUser);
 void showMyFlights(user myUser);
 void signIn();

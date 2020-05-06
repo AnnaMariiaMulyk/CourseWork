@@ -6,6 +6,7 @@
 #include <list>
 #include <iterator>
 #include <algorithm>
+#include <conio.h>
 using namespace std;
 
 int size = 10;//треба щоб розмір масиву з логінами і паролями вводився з клави але дееее
@@ -24,13 +25,16 @@ void init()
 	bool isOpen = fin.is_open();
 	if (isOpen == true)
 	{
-		
+		int money = 0;
+		string empty;
 		user oldUser;
 		while (!fin.eof())
 		{
 			getline(fin, oldUser.login);
 			getline(fin, oldUser.password);
 			fin >> oldUser.money;
+			//oldUser.money = money;
+			getline(fin, empty);
 			getline(fin, oldUser.email);
 			fin >> oldUser.countFlights;
 
@@ -235,18 +239,22 @@ void rewriteUsersFile()
 //}
 
 
-void editFlights() //для адміна
+void showMatrixofValues()
 {
 
 }
-//ФУНКЦІЇ КОРИСТУВАЧА
+void editFlights(flight flightToEdit) //для адміна
+{
+
+}
 void searchFlight(user myUser)
 {
 	string departure;
 	string destination;
 	date dep;
-	date arriv;
+	bool check = false;
 	cout << "\tSEARCH FLIGHTS" << endl;
+	cout << endl;
 	cout << "Departure: ";
 	cin.ignore();
 	getline(cin, departure);
@@ -254,18 +262,95 @@ void searchFlight(user myUser)
 	getline(cin, destination);
 	cout << endl;
 	cout << "Date of departure: ";
-	cin >> dep.day;
-	cin >> dep.month;
 	cin >> dep.year;
-	cout << "\tDate of arrivial: ";
-	cin >> arriv.day;
-	cin >> arriv.month;
-	cin >> arriv.year;
-	//було б не погано вибирати ці дати графічно, щоб виводився календар і кліком вибираєш дату
+	do
+	{
+		cout << "Date of departure: ";
+		cin >> dep.year;
+		if (dep.year > 2020)
+		{
+			cout << "Unaviable year!" << endl;
+			cout << "Enter year fwom 2020" << endl;
+		}
+		else if(dep.year % 400 == 0)
+		{
+			do
+			{
+				if (dep.year == 2020)
+				{
+					do
+					{
+						cout << "Enter number of month(5 - 12): " << endl;
+						cin >> dep.month;
+						if (dep.month <= 4 || dep.month >= 13)
+						{
+							cout << "Unaviable month!" << endl;
+						}
+					} while (dep.month <= 4);
+					if (dep.month == 5)
+					{
+						do
+						{
+							cout << "Enter day(08 - 31): ";
+							cin >> dep.day;
+							if (dep.day <= 7 || dep.day >= 32)
+							{
+								cout << "Unaviable day!" << endl;
+							}
+						} while (dep.day <= 07 || dep.day >= 32);
+					}
+				}
+
+			} while (dep.month >= 13 || dep.month <= 0);
+			
+			if (dep.month == 4 || dep.month == 6 || dep.month == 9 || dep.month == 11)
+			{
+				do
+				{
+					cout << "Enter day(1 - 30):";
+					cin >> dep.day;
+					if (dep.day <= 0 || dep.day >= 31)
+					{
+						cout << "Unaviable day!" << endl;
+					}
+
+				} while (dep.day <= 0 || dep.day >= 31);
+			}
+			else if (dep.month== 1 || dep.month == 3 || dep.month == 5 || dep.month == 7 || dep.month == 8 || dep.month == 10 || dep.month == 12)
+			{
+				do
+				{
+					cout << "Enter day(1 - 31):";
+					cin >> dep.day;
+					if (dep.day <= 0 || dep.day >= 32)
+					{
+						cout << "Unaviable day!" << endl;
+					}
+				} while (dep.day <= 0 || dep.day >= 32);
+			}
+			else if (dep.month == 2)
+			{
+				do
+				{
+					cout << "Enter day(1 - 29): ";
+					cin >> dep.day;
+					if (dep.day <= 0 || dep.day >= 30)
+					{
+						cout << "Unaviable day!" << endl;
+					}
+
+				} while (dep.day <= 0 || dep.day >= 30);
+			}
+		}
+		else
+		{
+			
+		}
+	} while (dep.year <= 2019);
 	
 	for (flight item : allFlights)
 	{
-		if (dep.day == item.departure.day && dep.month == item.departure.month && dep.year == item.departure.year && arriv.day == item.arrive.day && arriv.month == item.arrive.month && arriv.year)
+		if (dep.day == item.departure.day && dep.month == item.departure.month && dep.year == item.departure.year)
 		{
 
 		}
@@ -541,21 +626,17 @@ void signIn()
 	case 1:
 	{
 		cout << "Username: ";
-		
-		getline(cin, tempUser.login);
-		cin.ignore();
+		cin >> tempUser.login;
 		cout << endl;
 		cout << "Password: ";
-		getline(cin, tempUser.password);
-		
-			for(user item: users)
+		cin >> tempUser.password;
+		for(user item: users)
+		{
+			if (item.login == tempUser.login && item.password == tempUser.password)
 			{
-				if (item.login == tempUser.login && item.password == tempUser.password)
-				{
-					login = true;
-				}
+				login = true;
 			}
-		
+		}
 		if (login == true)
 		{
 			for (user item : users)
@@ -605,12 +686,13 @@ void signIn()
 							{
 								for (user item : users)
 								{
-									if (item.login == tempUser.login)
+									if (item.login == tempUser.login && item.password == tempUser.password)
 									{
 										item.password = temppasswd;
-										rewriteUsersFile();
 									}
 								}
+								
+								rewriteUsersFile();
 							}
 							else
 							{
@@ -697,19 +779,18 @@ void signIn()
 					break;
 				default:
 					break;
-				}//свіч вибір пункта меню профіль чи мої рейси і тд
+				}
 			} while (choiseMenu != 7);
-			
-		} //тут має бути іф логін тру
+		} 
 		else
 		{
 			cout << "Cant not find user with this login or password" << endl;
 		}
 		break;
 	}
+	
 	case 2:
 	{
-
 
 		break;
 	}
@@ -723,7 +804,7 @@ void signIn()
 	}
 	}while (choise != 3);
 }
-//СПІЛЬНІ ФУНКЦІЇ
+
 void signUp()
 {
 	string temppasswd;
@@ -771,28 +852,28 @@ void signUp()
 				{
 					cout << "User with this login is already exist!" << endl;
 				}
-						else
-						{
-							users.push_back(tempUser); 
-							ofstream fout;
-							fout.open(filenameUsersSignIn, fstream::app);
-							bool isOpen = fout.is_open();
-							if (isOpen == true)
-							{
-								fout << tempUser.login << endl;
-								fout << tempUser.password << endl;
-								fout << tempUser.money << endl;
-								fout << tempUser.email << endl;
-								fout << tempUser.countFlights << endl;
-	     						cout << "Sign in is succesful" << endl; 
-							}
-							else
-							{
-								cout << "Error: can not open file!" << endl;
-							}
-							fout.close();
+				else
+				{
+					users.push_back(tempUser); 
+					ofstream fout;
+					fout.open(filenameUsersSignIn, fstream::app);
+					bool isOpen = fout.is_open();
+					if (isOpen == true)
+					{
+						fout << tempUser.login << endl;
+						fout << tempUser.password << endl;
+						fout << tempUser.money << endl;
+						fout << tempUser.email << endl;
+						fout << tempUser.countFlights << endl;
+	     				cout << "Sign in is succesful" << endl; 
+					}
+					else
+					{
+						cout << "Error: can not open file!" << endl;
+					}
+					fout.close();
 							
-						}
+					}
 			}
 			else
 			{
@@ -851,3 +932,8 @@ void signUp()
 		break;
 	}
 }
+
+void buyTicket()
+{
+}
+
