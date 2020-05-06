@@ -1,9 +1,9 @@
 ﻿  Functions.cpp
-C:\Users\Администратор\source\repos\CourseWork\CourseWork\Functions.cpp(378,74): warning C4129: /: неизвестная escape-последовательность
-C:\Users\Администратор\source\repos\CourseWork\CourseWork\Functions.cpp(378,121): warning C4129: /: неизвестная escape-последовательность
-C:\Users\Администратор\source\repos\CourseWork\CourseWork\Functions.cpp(381,69): warning C4129: /: неизвестная escape-последовательность
-C:\Users\Администратор\source\repos\CourseWork\CourseWork\Functions.cpp(381,111): warning C4129: /: неизвестная escape-последовательность
-C:\Users\Администратор\source\repos\CourseWork\CourseWork\Functions.cpp(432,76): warning C4129: $: неизвестная escape-последовательность
-C:\Users\Администратор\source\repos\CourseWork\CourseWork\Functions.cpp(449,15): warning C4129: (: неизвестная escape-последовательность
-C:\Users\Администратор\source\repos\CourseWork\CourseWork\Functions.cpp(449,15): warning C4129: ): неизвестная escape-последовательность
+C:\Users\Администратор\source\repos\CourseWork\CourseWork\Functions.cpp(542,73): warning C4129: /: неизвестная escape-последовательность
+C:\Users\Администратор\source\repos\CourseWork\CourseWork\Functions.cpp(542,120): warning C4129: /: неизвестная escape-последовательность
+C:\Users\Администратор\source\repos\CourseWork\CourseWork\Functions.cpp(545,68): warning C4129: /: неизвестная escape-последовательность
+C:\Users\Администратор\source\repos\CourseWork\CourseWork\Functions.cpp(545,110): warning C4129: /: неизвестная escape-последовательность
+C:\Users\Администратор\source\repos\CourseWork\CourseWork\Functions.cpp(596,76): warning C4129: $: неизвестная escape-последовательность
+C:\Users\Администратор\source\repos\CourseWork\CourseWork\Functions.cpp(613,15): warning C4129: (: неизвестная escape-последовательность
+C:\Users\Администратор\source\repos\CourseWork\CourseWork\Functions.cpp(613,15): warning C4129: ): неизвестная escape-последовательность
   CourseWork.vcxproj -> C:\Users\Администратор\source\repos\CourseWork\Debug\CourseWork.exe

@@ -16,6 +16,7 @@ string filenameUsersSignIn = "UsersSignIn.txt"; //файл з логінами і паролями кор
 list <user> users; //список з користувачами (при реєстрації вноситься інф)
 list <admin> admins;
 list<flight> allFlights;
+
 //ФУНКЦІЇ АДМІНА
 
 void init()
@@ -40,7 +41,7 @@ void init()
 
 			if (oldUser.countFlights >= 1)
 			{
-				
+
 				oldUser.myFlights = new flight[oldUser.countFlights];
 				for (int i = 0; i < oldUser.countFlights; i++)
 				{
@@ -64,7 +65,7 @@ void init()
 						getline(fin, oldUser.myFlights[i].tickets[j].ticketClass);
 						fin >> oldUser.myFlights[i].tickets[j].value;
 						fin >> oldUser.myFlights[i].tickets[j].possibleToReturn;
-						
+
 					}
 					fin >> oldUser.myFlights[i].countConnectionFlights;
 					oldUser.myFlights[i].ConnectionFlights = new connectionFlight[oldUser.myFlights[i].countConnectionFlights];
@@ -75,12 +76,12 @@ void init()
 					}
 					getline(fin, oldUser.myFlights[i].departureCity);
 					getline(fin, oldUser.myFlights[i].arrivalCity);
-					
-					
+
+
 				}
 				delete oldUser.myFlights;
 			}
-			
+
 			users.push_back(oldUser);
 			oldUser = user();
 		}
@@ -176,47 +177,51 @@ void rewriteUsersFile()
 	{
 		for (user item : users)
 		{
-			fout << item.login << endl;
-			fout << item.password << endl;
-			fout << item.money << endl;
-			fout << item.email << endl;
-			fout << item.countFlights << endl;
-			if (item.countFlights >= 1)
+			if (item.login != "")
 			{
-				for (int i = 0; i < item.countFlights; i++)
+				fout << item.login << endl;
+				fout << item.password << endl;
+				fout << item.money << endl;
+				fout << item.email << endl;
+				fout << item.countFlights << endl;
+				if (item.countFlights >= 1)
 				{
-					fout << item.myFlights[i].name << endl;
-					fout << item.myFlights[i].company << endl;
-					fout << item.myFlights[i].departure.hour << endl;
-					fout << item.myFlights[i].departure.minute << endl;
-					fout << item.myFlights[i].departure.day << endl;
-					fout << item.myFlights[i].departure.month << endl;
-					fout << item.myFlights[i].departure.year << endl;
-					fout << item.myFlights[i].arrive.hour << endl;
-					fout << item.myFlights[i].arrive.minute << endl;
-					fout << item.myFlights[i].arrive.day << endl;
-					fout << item.myFlights[i].arrive.month << endl;
-					fout << item.myFlights[i].arrive.year << endl;
-					fout << item.myFlights[i].countTickets << endl;
-					for (int j = 0; j < item.myFlights[i].countTickets; i++)
+					for (int i = 0; i < item.countFlights; i++)
 					{
-						fout << item.myFlights[i].tickets[j].ticketClass << endl;
-						fout << item.myFlights[i].tickets[j].value << endl;
-						fout << item.myFlights[i].tickets[j].possibleToReturn << endl;
-					}
-					fout << item.myFlights[i].countConnectionFlights << endl;
-					if (item.myFlights[i].countConnectionFlights >= 1)
-					{
-						for (int j = 0; j < item.myFlights[i].countConnectionFlights; i++)
+						fout << item.myFlights[i].name << endl;
+						fout << item.myFlights[i].company << endl;
+						fout << item.myFlights[i].departure.hour << endl;
+						fout << item.myFlights[i].departure.minute << endl;
+						fout << item.myFlights[i].departure.day << endl;
+						fout << item.myFlights[i].departure.month << endl;
+						fout << item.myFlights[i].departure.year << endl;
+						fout << item.myFlights[i].arrive.hour << endl;
+						fout << item.myFlights[i].arrive.minute << endl;
+						fout << item.myFlights[i].arrive.day << endl;
+						fout << item.myFlights[i].arrive.month << endl;
+						fout << item.myFlights[i].arrive.year << endl;
+						fout << item.myFlights[i].countTickets << endl;
+						for (int j = 0; j < item.myFlights[i].countTickets; i++)
 						{
-							fout << item.myFlights[i].ConnectionFlights[j].connectionFlightCity << endl;
-							fout << item.myFlights[i].ConnectionFlights[j].connectionFlightTime << endl;
+							fout << item.myFlights[i].tickets[j].ticketClass << endl;
+							fout << item.myFlights[i].tickets[j].value << endl;
+							fout << item.myFlights[i].tickets[j].possibleToReturn << endl;
 						}
-					}
-					fout << item.myFlights[i].departureCity << endl;
-					fout << item.myFlights[i].arrivalCity << endl;
+						fout << item.myFlights[i].countConnectionFlights << endl;
+						if (item.myFlights[i].countConnectionFlights >= 1)
+						{
+							for (int j = 0; j < item.myFlights[i].countConnectionFlights; i++)
+							{
+								fout << item.myFlights[i].ConnectionFlights[j].connectionFlightCity << endl;
+								fout << item.myFlights[i].ConnectionFlights[j].connectionFlightTime << endl;
+							}
+						}
+						fout << item.myFlights[i].departureCity << endl;
+						fout << item.myFlights[i].arrivalCity << endl;
 
+					}
 				}
+
 			}
 		}
 	}
@@ -251,110 +256,269 @@ void searchFlight(user myUser)
 {
 	string departure;
 	string destination;
-	date dep;
+	flight dep;
+	flight arriv; // якщо квиток в обидві сторони, то ця змінна для вочернення
 	bool check = false;
 	cout << "\tSEARCH FLIGHTS" << endl;
 	cout << endl;
 	cout << "Departure: ";
 	cin.ignore();
-	getline(cin, departure);
+	getline(cin, dep.departureCity);
 	cout << "\tDestination: ";
-	getline(cin, destination);
+	getline(cin, dep.arrivalCity);
 	cout << endl;
 	cout << "Date of departure: ";
-	cin >> dep.year;
+	cin >> dep.departure.year;
 	do
 	{
-		cout << "Date of departure: ";
-		cin >> dep.year;
-		if (dep.year > 2020)
+		cout << "Enter year of departure: ";
+		cin >> dep.departure.year;
+		if (dep.departure.year > 2020)
 		{
 			cout << "Unaviable year!" << endl;
 			cout << "Enter year fwom 2020" << endl;
 		}
-		else if(dep.year % 400 == 0)
+		//else if(dep.departure.year % 400 == 0)
+
+		/*do
+		{*/
+		if (dep.departure.year == 2020)
 		{
 			do
 			{
-				if (dep.year == 2020)
+				cout << "Enter number of month(5 - 12): " << endl;
+				cin >> dep.departure.month;
+				if (dep.departure.month <= 4 || dep.departure.month >= 13)
 				{
-					do
-					{
-						cout << "Enter number of month(5 - 12): " << endl;
-						cin >> dep.month;
-						if (dep.month <= 4 || dep.month >= 13)
-						{
-							cout << "Unaviable month!" << endl;
-						}
-					} while (dep.month <= 4);
-					if (dep.month == 5)
-					{
-						do
-						{
-							cout << "Enter day(08 - 31): ";
-							cin >> dep.day;
-							if (dep.day <= 7 || dep.day >= 32)
-							{
-								cout << "Unaviable day!" << endl;
-							}
-						} while (dep.day <= 07 || dep.day >= 32);
-					}
+					cout << "Unaviable month!" << endl;
 				}
-
-			} while (dep.month >= 13 || dep.month <= 0);
-			
-			if (dep.month == 4 || dep.month == 6 || dep.month == 9 || dep.month == 11)
+			} while (dep.departure.month <= 4);
+			if (dep.departure.month == 5)
 			{
 				do
 				{
-					cout << "Enter day(1 - 30):";
-					cin >> dep.day;
-					if (dep.day <= 0 || dep.day >= 31)
+					cout << "Enter day(08 - 31): ";
+					cin >> dep.departure.day;
+					if (dep.departure.day <= 7 || dep.departure.day >= 32)
 					{
 						cout << "Unaviable day!" << endl;
 					}
-
-				} while (dep.day <= 0 || dep.day >= 31);
-			}
-			else if (dep.month== 1 || dep.month == 3 || dep.month == 5 || dep.month == 7 || dep.month == 8 || dep.month == 10 || dep.month == 12)
-			{
-				do
-				{
-					cout << "Enter day(1 - 31):";
-					cin >> dep.day;
-					if (dep.day <= 0 || dep.day >= 32)
-					{
-						cout << "Unaviable day!" << endl;
-					}
-				} while (dep.day <= 0 || dep.day >= 32);
-			}
-			else if (dep.month == 2)
-			{
-				do
-				{
-					cout << "Enter day(1 - 29): ";
-					cin >> dep.day;
-					if (dep.day <= 0 || dep.day >= 30)
-					{
-						cout << "Unaviable day!" << endl;
-					}
-
-				} while (dep.day <= 0 || dep.day >= 30);
+				} while (dep.departure.day <= 07 || dep.departure.day >= 32);
 			}
 		}
 		else
 		{
-			
+			do
+			{
+				cout << "Enter number of month(1 - 12): ";
+				cin >> dep.departure.month;
+				if (dep.departure.month <= 0 || dep.departure.month >= 13)
+				{
+					cout << "Unaviable month!" << endl;
+				}
+			} while (dep.departure.month <= 0 || dep.departure.month >= 13);
 		}
-	} while (dep.year <= 2019);
-	
-	for (flight item : allFlights)
+
+		if (dep.departure.month == 4 || dep.departure.month == 6 || dep.departure.month == 9 || dep.departure.month == 11)
+		{
+
+			do
+			{
+				cout << "Enter day(1 - 30):";
+				cin >> dep.departure.day;
+				if (dep.departure.day <= 0 || dep.departure.day >= 31)
+				{
+					cout << "Unaviable day!" << endl;
+				}
+
+			} while (dep.departure.day <= 0 || dep.departure.day >= 31);
+		}
+		else if (dep.departure.month == 1 || dep.departure.month == 3 || dep.departure.month == 5 || dep.departure.month == 7 || dep.departure.month == 8 || dep.departure.month == 10 || dep.departure.month == 12)
+		{
+			do
+			{
+				cout << "Enter day(1 - 31):";
+				cin >> dep.departure.day;
+				if (dep.departure.day <= 0 || dep.departure.day >= 32)
+				{
+					cout << "Unaviable day!" << endl;
+				}
+			} while (dep.departure.day <= 0 || dep.departure.day >= 32);
+		}
+		else if (dep.departure.month == 2)
+		{
+			if (dep.departure.year % 400 == 0)
+			{
+				do
+				{
+					cout << "Enter day(1 - 29): ";
+					cin >> dep.departure.day;
+					if (dep.departure.day <= 0 || dep.departure.day >= 30)
+					{
+						cout << "Unaviable day!" << endl;
+					}
+
+				} while (dep.departure.day <= 0 || dep.departure.day >= 30);
+
+			}
+			else
+			{
+				do
+				{
+					cout << "Enter day(1 - 28): " << endl;
+					cin >> dep.departure.day;
+					if (dep.departure.day <= 0 || dep.departure.day >= 29)
+					{
+						cout << "Unaviable day!" << endl;
+					}
+				} while (dep.departure.day <= 0 || dep.departure.day >= 29);
+			}
+
+		}
+
+		//} while (dep.departure.month >= 13 || dep.departure.month <= 0);
+
+	} while (dep.departure.year <= 2019);
+
+	string choise;
+	do
+	{
+		cout << "Is it one way flight?" << endl;
+		cin >> choise;
+		if (choise == "yes")
+		{
+
+
+
+
+		}
+		else if (choise == "no")
+		{
+			arriv.departureCity = dep.departureCity;
+			arriv.arrivalCity = dep.arrivalCity;
+
+			do
+			{
+				cout << "Enter year of departure: ";
+				cin >> arriv.departure.year;
+				if (arriv.departure.year > 2020)
+				{
+					cout << "Unaviable year!" << endl;
+					cout << "Enter year fwom 2020" << endl;
+				}
+				//else if(dep.departure.year % 400 == 0)
+
+				/*do
+				{*/
+				if (arriv.departure.year == 2020)
+				{
+					do
+					{
+						cout << "Enter number of month(5 - 12): " << endl;
+						cin >> arriv.departure.month;
+						if (arriv.departure.month <= 4 || arriv.departure.month >= 13)
+						{
+							cout << "Unaviable month!" << endl;
+						}
+					} while (arriv.departure.month <= 4);
+					if (arriv.departure.month == 5)
+					{
+						do
+						{
+							cout << "Enter day(08 - 31): ";
+							cin >> arriv.departure.day;
+							if (arriv.departure.day <= 7 || arriv.departure.day >= 32)
+							{
+								cout << "Unaviable day!" << endl;
+							}
+						} while (arriv.departure.day <= 07 || arriv.departure.day >= 32);
+					}
+				}
+				else
+				{
+					do
+					{
+						cout << "Enter number of month(1 - 12): ";
+						cin >> arriv.departure.month;
+						if (arriv.departure.month <= 0 || arriv.departure.month >= 13)
+						{
+							cout << "Unaviable month!" << endl;
+						}
+					} while (arriv.departure.month <= 0 || arriv.departure.month >= 13);
+				}
+
+				if (arriv.departure.month == 4 || arriv.departure.month == 6 || arriv.departure.month == 9 || arriv.departure.month == 11)
+				{
+
+					do
+					{
+						cout << "Enter day(1 - 30):";
+						cin >> arriv.departure.day;
+						if (arriv.departure.day <= 0 || arriv.departure.day >= 31)
+						{
+							cout << "Unaviable day!" << endl;
+						}
+
+					} while (arriv.departure.day <= 0 || arriv.departure.day >= 31);
+				}
+				else if (arriv.departure.month == 1 || arriv.departure.month == 3 || arriv.departure.month == 5 || arriv.departure.month == 7 || arriv.departure.month == 8 || arriv.departure.month == 10 || arriv.departure.month == 12)
+				{
+					do
+					{
+						cout << "Enter day(1 - 31):";
+						cin >> arriv.departure.day;
+						if (arriv.departure.day <= 0 || arriv.departure.day >= 32)
+						{
+							cout << "Unaviable day!" << endl;
+						}
+					} while (arriv.departure.day <= 0 || arriv.departure.day >= 32);
+				}
+				else if (arriv.departure.month == 2)
+				{
+					if (arriv.departure.year % 400 == 0)
+					{
+						do
+						{
+							cout << "Enter day(1 - 29): ";
+							cin >> arriv.departure.day;
+							if (arriv.departure.day <= 0 || arriv.departure.day >= 30)
+							{
+								cout << "Unaviable day!" << endl;
+							}
+
+						} while (arriv.departure.day <= 0 || arriv.departure.day >= 30);
+
+					}
+					else
+					{
+						do
+						{
+							cout << "Enter day(1 - 28): " << endl;
+							cin >> arriv.departure.day;
+							if (arriv.departure.day <= 0 || arriv.departure.day >= 29)
+							{
+								cout << "Unaviable day!" << endl;
+							}
+						} while (arriv.departure.day <= 0 || arriv.departure.day >= 29);
+					}
+
+				}
+
+				//} while (dep.departure.month >= 13 || dep.departure.month <= 0);
+
+			} while (arriv.departure.year <= 2019);
+
+
+		}
+	} while (choise != "yes" || choise != "no");
+
+	/*for (flight item : allFlights)
 	{
 		if (dep.day == item.departure.day && dep.month == item.departure.month && dep.year == item.departure.year)
 		{
 
 		}
-	}
+	}*/
 
 }
 
@@ -373,17 +537,17 @@ void showMyFlights(user myUser)
 			cout << myUser.myFlights[i].tickets[j].value << endl;
 			cout << myUser.myFlights[i].tickets[j].possibleToReturn << endl;
 		}
-			cout << "Departure: " << myUser.myFlights[i].departureCity << endl;
-			cout << "Time of departure: " << myUser.myFlights[i].departure.hour << ":" << myUser.myFlights[i].departure.minute << endl;
-			cout << "Date of departure: " << myUser.myFlights[i].departure.day << "\/" << myUser.myFlights[i].departure.month << "\/" << myUser.myFlights[i].departure.year << endl;
-			cout << "Arrival: " << myUser.myFlights[i].arrivalCity << endl;
-			cout << "Time of arrival: " << myUser.myFlights[i].arrive.hour << ":" << myUser.myFlights[i].arrive.minute << endl;
-			cout << "Date of arrival: " << myUser.myFlights[i].arrive.day << "\/" << myUser.myFlights->arrive.month << "\/" << myUser.myFlights->arrive.year << endl;
-			for (int k = 0; k < myUser.myFlights[i].countConnectionFlights; k++)
-			{
-				cout << myUser.myFlights[i].ConnectionFlights[k].connectionFlightCity << endl;
-				cout << myUser.myFlights[i].ConnectionFlights[k].connectionFlightTime << endl;
-			}
+		cout << "Departure: " << myUser.myFlights[i].departureCity << endl;
+		cout << "Time of departure: " << myUser.myFlights[i].departure.hour << ":" << myUser.myFlights[i].departure.minute << endl;
+		cout << "Date of departure: " << myUser.myFlights[i].departure.day << "\/" << myUser.myFlights[i].departure.month << "\/" << myUser.myFlights[i].departure.year << endl;
+		cout << "Arrival: " << myUser.myFlights[i].arrivalCity << endl;
+		cout << "Time of arrival: " << myUser.myFlights[i].arrive.hour << ":" << myUser.myFlights[i].arrive.minute << endl;
+		cout << "Date of arrival: " << myUser.myFlights[i].arrive.day << "\/" << myUser.myFlights->arrive.month << "\/" << myUser.myFlights->arrive.year << endl;
+		for (int k = 0; k < myUser.myFlights[i].countConnectionFlights; k++)
+		{
+			cout << myUser.myFlights[i].ConnectionFlights[k].connectionFlightCity << endl;
+			cout << myUser.myFlights[i].ConnectionFlights[k].connectionFlightTime << endl;
+		}
 	}
 
 	string choiseDelete;
@@ -433,15 +597,15 @@ void showMyFlights(user myUser)
 											}
 											item.myFlights[i].tickets[j] = item.myFlights[i].tickets[j + 1];
 											count++;
-											break;	
+											break;
 										}
 
-											
+
 									}
 								}
 							}
 
-						} while (number < 0 && number >= item.myFlights[i].countTickets);		
+						} while (number < 0 && number >= item.myFlights[i].countTickets);
 					}
 
 					if (count == 0)
@@ -613,196 +777,197 @@ void signIn()
 	do
 	{
 
-	cout << "\tSIGN IN" << endl;
-	cout << "Sign in as:" << endl;
-	cout << "1. User" << endl;
-	cout << "2. Admin" << endl;
-	cout << "3. Exit" << endl;
-	cout << endl;
-	cout << "How to sign in?" << endl;
-	cin >> choise;
-	switch (choise)
-	{
-	case 1:
-	{
-		cout << "Username: ";
-		cin >> tempUser.login;
+		cout << "\tSIGN IN" << endl;
+		cout << "Sign in as:" << endl;
+		cout << "1. User" << endl;
+		cout << "2. Admin" << endl;
+		cout << "3. Exit" << endl;
 		cout << endl;
-		cout << "Password: ";
-		cin >> tempUser.password;
-		for(user item: users)
+		cout << "How to sign in?" << endl;
+		cin >> choise;
+		switch (choise)
 		{
-			if (item.login == tempUser.login && item.password == tempUser.password)
-			{
-				login = true;
-			}
-		}
-		if (login == true)
+		case 1:
 		{
+			login = false;
+			cout << "Username: ";
+			cin >> tempUser.login;
+			cout << endl;
+			cout << "Password: ";
+			cin >> tempUser.password;
 			for (user item : users)
 			{
-				if (tempUser.login == item.login)
+				if (item.login == tempUser.login && item.password == tempUser.password)
 				{
-					tempUser = item;
+					login = true;
 				}
 			}
-			int choiseMenu = 0;
-			do
+			if (login == true)
 			{
-				cout << "MENU" << endl;
-				cout << "1. My profile" << endl;
-				cout << "2. My flights" << endl;
-				cout << "3. My money balance" << endl;
-				cout << "4. Notifications" << endl;
-				cout << "5. Search flight" << endl;
-				cout << "6. Delete account" << endl;
-				cout << "7. Sign out" << endl;
-				cout << endl;
-				cout << "Enter action: ";
-				cin >> choiseMenu;
-				string tempPasswd = "";
-				switch (choiseMenu)
+				for (user item : users)
 				{
-				case 1:
-				
-					cout << "Login: " << tempUser.login << endl;
-					cout << "Password: ********" << endl;
-					cout << "Do you want to change it?" << endl;
-					cout << "1. Yes" << endl;
-					cout << "2. No" << endl;
-					cin >> choisepasswd;
-					//знизу правильно
-					if (choisepasswd == 1)
+					if (tempUser.login == item.login)
 					{
-						string temppasswd;
-						string temppasswd2;
-						do
-						{
-							cout << "Enter new password: ";
-							cin >> temppasswd;
-							cout << "Confirm password: ";
-							cin >> temppasswd2;
-							if (temppasswd == temppasswd2)
-							{
-								for (user item : users)
-								{
-									if (item.login == tempUser.login && item.password == tempUser.password)
-									{
-										item.password = temppasswd;
-									}
-								}
-								
-								rewriteUsersFile();
-							}
-							else
-							{
-								cout << "Passwords don`t match" << endl;
-							}
-
-						} while (temppasswd != temppasswd2);
+						tempUser = item;
 					}
-					else
-					{
-						cout << "Okay!" << endl;
-					}
-					//зверху правильно
-					break;
-				case 2:
-					showMyFlights(tempUser);
-					break;
-				case 3:
-				{
-					cout << "MONEY BALANCE" << endl;
-					for (user item : users)
-					{
-						if (item.login == tempUser.login)
-						{
-							string moneychoise;
-							do {
-								cout << "Money: " << item.money << endl;
-								cout << "Do you want to add money?" << endl;
-								cout << "Enter yes or no: ";
-								cin >> moneychoise;
-								if (moneychoise == "yes")
-								{
-									float moneyAdd;
-									cout << "Enter money add: ";
-									cin >> moneyAdd;
-									item.money += moneyAdd;
-									rewriteUsersFile();
-								}
-							} while (moneychoise != "no");
-						}
-					}
-					break;
 				}
-				case 4:
-
-					break;
-				case 5:
-					break;
-				case 6:
-					cout << "Enter password to delete account: ";
-					cin >> tempPasswd;
-					if (tempPasswd == tempUser.password)
+				int choiseMenu = 0;
+				do
+				{
+					cout << "MENU" << endl;
+					cout << "1. My profile" << endl;
+					cout << "2. My flights" << endl;
+					cout << "3. My money balance" << endl;
+					cout << "4. Notifications" << endl;
+					cout << "5. Search flight" << endl;
+					cout << "6. Delete account" << endl;
+					cout << "7. Sign out" << endl;
+					cout << endl;
+					cout << "Enter action: ";
+					cin >> choiseMenu;
+					string tempPasswd = "";
+					switch (choiseMenu)
 					{
-						for (user item: users) 
+					case 1:
+
+						cout << "Login: " << tempUser.login << endl;
+						cout << "Password: ********" << endl;
+						cout << "Do you want to change it?" << endl;
+						cout << "1. Yes" << endl;
+						cout << "2. No" << endl;
+						cin >> choisepasswd;
+						//знизу правильно
+						if (choisepasswd == 1)
 						{
-							if (item.login == tempUser.login)
+							string temppasswd;
+							string temppasswd2;
+							do
 							{
-								string finalChoise;
-								cout << "Are you sure that you want to delete your account? (yes/no)" << endl;
-								cin >> finalChoise;
-								if (finalChoise == "yes")
+								cout << "Enter new password: ";
+								cin >> temppasswd;
+								cout << "Confirm password: ";
+								cin >> temppasswd2;
+								if (temppasswd == temppasswd2)
 								{
-									//users.remove(item);
-									//видалити з файлу!!!
+									for (user& item : users)
+									{
+										if (item.login == tempUser.login && item.password == tempUser.password)
+										{
+											item.password = temppasswd;
+										}
+									}
+
+									rewriteUsersFile();
 								}
 								else
 								{
-									cout << "Okay!" << endl;
+									cout << "Passwords don`t match" << endl;
 								}
-							}
-							else
+
+							} while (temppasswd != temppasswd2);
+						}
+						else
+						{
+							cout << "Okay!" << endl;
+						}
+						//зверху правильно
+						break;
+					case 2:
+						showMyFlights(tempUser);
+						break;
+					case 3:
+					{
+						cout << "MONEY BALANCE" << endl;
+						for (user item : users)
+						{
+							if (item.login == tempUser.login)
 							{
-								cout << "Error: can not find your account in file system" << endl;
+								string moneychoise;
+								do {
+									cout << "Money: " << item.money << endl;
+									cout << "Do you want to add money?" << endl;
+									cout << "Enter yes or no: ";
+									cin >> moneychoise;
+									if (moneychoise == "yes")
+									{
+										float moneyAdd;
+										cout << "Enter money add: ";
+										cin >> moneyAdd;
+										item.money += moneyAdd;
+										rewriteUsersFile();
+									}
+								} while (moneychoise != "no");
 							}
 						}
+						break;
 					}
-					else
-					{
-						cout << "Wrong password!" << endl;
+					case 4:
+
+						break;
+					case 5:
+						break;
+					case 6:
+						cout << "Enter password to delete account: ";
+						cin >> tempPasswd;
+						if (tempPasswd == tempUser.password)
+						{
+							for (user item : users)
+							{
+								if (item.login == tempUser.login)
+								{
+									string finalChoise;
+									cout << "Are you sure that you want to delete your account? (yes/no)" << endl;
+									cin >> finalChoise;
+									if (finalChoise == "yes")
+									{
+										//users.remove(item);
+										//видалити з файлу!!!
+									}
+									else
+									{
+										cout << "Okay!" << endl;
+									}
+								}
+								else
+								{
+									cout << "Error: can not find your account in file system" << endl;
+								}
+							}
+						}
+						else
+						{
+							cout << "Wrong password!" << endl;
+						}
+						break;
+					case 7:
+						cout << "BYE!" << endl;
+						break;
+					default:
+						break;
 					}
-					break;
-				case 7:
-					cout << "BYE!" << endl;
-					break;
-				default:
-					break;
-				}
-			} while (choiseMenu != 7);
-		} 
-		else
-		{
-			cout << "Cant not find user with this login or password" << endl;
+				} while (choiseMenu != 7);
+			}
+			else
+			{
+				cout << "Cant not find user with this login or password" << endl;
+			}
+			break;
 		}
-		break;
-	}
-	
-	case 2:
-	{
 
-		break;
-	}
-	case 3:
-	{
+		case 2:
+		{
 
-		break;
-	}
-	default:
-		break;
-	}
-	}while (choise != 3);
+			break;
+		}
+		case 3:
+		{
+
+			break;
+		}
+		default:
+			break;
+		}
+	} while (choise != 3);
 }
 
 void signUp()
@@ -822,111 +987,111 @@ void signUp()
 	cin >> choise;
 	switch (choise)
 	{
-		case 1:
-			cout << "Enter login: ";
-			cin >> tempUser.login;
-			cout << "Enter password: ";
-			cin >> temppasswd;
-			cout << "Confirm password: ";
-			cin >> temppasswd2;
-			if (temppasswd == temppasswd2)
+	case 1:
+		cout << "Enter login: ";
+		cin >> tempUser.login;
+		cout << "Enter password: ";
+		cin >> temppasswd;
+		cout << "Confirm password: ";
+		cin >> temppasswd2;
+		if (temppasswd == temppasswd2)
+		{
+			tempUser.password = temppasswd;
+			cout << "Enter email: ";
+			cin >> tempUser.email;
+			tempUser.money = 0;
+			cout << "Enter money: ";
+			cin >> addMoney;
+			tempUser.money += addMoney;
+			tempUser.countFlights = 0;
+			for (user item : users)
 			{
-				tempUser.password = temppasswd;
-				cout << "Enter email: ";
-				cin >> tempUser.email;
-				tempUser.money = 0;
-				cout << "Enter money: ";
-				cin >> addMoney;
-				tempUser.money += addMoney;
-				tempUser.countFlights = 0;
-				for(user item :users)
+				if (item.login == tempUser.login)
 				{
-					if (item.login == tempUser.login)
-					{
-						exist = true;
-					}
+					exist = true;
+				}
 
-				}
-						
-				if (exist == true)
-				{
-					cout << "User with this login is already exist!" << endl;
-				}
-				else
-				{
-					users.push_back(tempUser); 
-					ofstream fout;
-					fout.open(filenameUsersSignIn, fstream::app);
-					bool isOpen = fout.is_open();
-					if (isOpen == true)
-					{
-						fout << tempUser.login << endl;
-						fout << tempUser.password << endl;
-						fout << tempUser.money << endl;
-						fout << tempUser.email << endl;
-						fout << tempUser.countFlights << endl;
-	     				cout << "Sign in is succesful" << endl; 
-					}
-					else
-					{
-						cout << "Error: can not open file!" << endl;
-					}
-					fout.close();
-							
-					}
+			}
+
+			if (exist == true)
+			{
+				cout << "User with this login is already exist!" << endl;
 			}
 			else
 			{
-				cout << "Password don`t match" << endl;
-			}
-			break;
-		case 2:
-			cout << "Enter login: ";
-			cin >> tempAdmin.login;
-			cout << "Enter password: ";
-			cin >> temppasswd;
-			cout << "Confirm password: ";
-			cin >> temppasswd2;
-			if (temppasswd == temppasswd2)
-			{
-				tempAdmin.password = temppasswd;
-				cout << "Enter yout company: ";
-				cin >> tempAdmin.company;
-				for (user item : users)
+				users.push_back(tempUser);
+				ofstream fout;
+				fout.open(filenameUsersSignIn, fstream::app);
+				bool isOpen = fout.is_open();
+				if (isOpen == true)
 				{
-					if (item.login == tempUser.login)
-					{
-						exist = true;
-					}
-					
-				}
-				if (exist == true)
-				{
-					cout << "Admin with this login is already exist!" << endl;
+					fout << tempUser.login << endl;
+					fout << tempUser.password << endl;
+					fout << tempUser.money << endl;
+					fout << tempUser.email << endl;
+					fout << tempUser.countFlights << endl;
+					cout << "Sign in is succesful" << endl;
 				}
 				else
 				{
-					admins.push_back(tempAdmin);
-					ofstream fout;
-					fout.open(filenameAdminsSignIn, fstream::app);
-					const bool isOpen = fout.is_open();
-					if (isOpen == true)
-					{
-						fout << tempAdmin.login << endl;
-						fout << tempAdmin.password << endl;
-						fout << tempAdmin.company << endl;
-					}
-					else
-					{
-						cout << "Error: can not open file!" << endl;
-					}
-					fout.close();
+					cout << "Error: can not open file!" << endl;
 				}
+				fout.close();
+
+			}
+		}
+		else
+		{
+			cout << "Password don`t match" << endl;
+		}
+		break;
+	case 2:
+		cout << "Enter login: ";
+		cin >> tempAdmin.login;
+		cout << "Enter password: ";
+		cin >> temppasswd;
+		cout << "Confirm password: ";
+		cin >> temppasswd2;
+		if (temppasswd == temppasswd2)
+		{
+			tempAdmin.password = temppasswd;
+			cout << "Enter yout company: ";
+			cin >> tempAdmin.company;
+			for (user item : users)
+			{
+				if (item.login == tempUser.login)
+				{
+					exist = true;
+				}
+
+			}
+			if (exist == true)
+			{
+				cout << "Admin with this login is already exist!" << endl;
 			}
 			else
 			{
-				cout << "Password don`t match" << endl;
+				admins.push_back(tempAdmin);
+				ofstream fout;
+				fout.open(filenameAdminsSignIn, fstream::app);
+				const bool isOpen = fout.is_open();
+				if (isOpen == true)
+				{
+					fout << tempAdmin.login << endl;
+					fout << tempAdmin.password << endl;
+					fout << tempAdmin.company << endl;
+				}
+				else
+				{
+					cout << "Error: can not open file!" << endl;
+				}
+				fout.close();
 			}
+		}
+		else
+		{
+			cout << "Password don`t match" << endl;
+		}
 
 	default:
 		break;
